@@ -60,3 +60,6 @@ out/
 
 # Generated docs
 HELP.md
+
+# Environment variables (local secrets)
+.env
