@@ -13,12 +13,16 @@ import java.util.List;
 public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long>,
                                                JpaSpecificationExecutor<PaymentCard> {
 
-    //named method, gets all cards by user id
-    List<PaymentCard> findByUserId(Long id);
+    //named method, gets all cards by user userId
+    List<PaymentCard> findByUserId(Long userId);
+
+    // JPQL, card counting for limiting
+    @Query("SELECT count(c) FROM PaymentCard c WHERE c.user.id = :userId")
+    long countByUserId(@Param("userId") Long userId);
 
     //native SQL just for example because there is a standard named method for this
     @NativeQuery(value = "SELECT * FROM payment_cards WHERE user_id = :userId AND active = true")
-    List<PaymentCard> findActiveCardsByUserIdNative(@Param("userId") Long id);
+    List<PaymentCard> findActiveCardsByUserIdNative(@Param("userId") Long userId);
 
     // JPQL, activates or deactivates card
     @Modifying

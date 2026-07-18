@@ -2,6 +2,7 @@ package com.innowise.userservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "users")
 public class User extends AbstractAuditingEntity {
 
@@ -41,5 +42,5 @@ public class User extends AbstractAuditingEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true,  fetch = FetchType.EAGER)
-    private List<PaymentCard> paymentCards = new ArrayList<>();
+    private List<PaymentCard> cards = new ArrayList<>();
 }
