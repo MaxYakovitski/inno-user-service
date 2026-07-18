@@ -6,7 +6,7 @@ import com.innowise.userservice.mapper.PaymentCardMapper;
 import com.innowise.userservice.repository.PaymentCardRepository;
 import com.innowise.userservice.repository.specification.PaymentCardSpecification;
 import com.innowise.userservice.service.PaymentCardQueryService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PaymentCardQueryServiceImpl implements PaymentCardQueryService {
 
     private final PaymentCardRepository paymentCardRepository;

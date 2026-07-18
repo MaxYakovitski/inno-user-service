@@ -11,7 +11,7 @@ import com.innowise.userservice.mapper.PaymentCardMapper;
 import com.innowise.userservice.repository.PaymentCardRepository;
 import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.service.PaymentCardCommandService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PaymentCardCommandServiceImpl implements PaymentCardCommandService {
 
     private final PaymentCardRepository paymentCardRepository;

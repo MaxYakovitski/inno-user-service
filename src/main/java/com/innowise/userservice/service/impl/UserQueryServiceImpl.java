@@ -7,7 +7,7 @@ import com.innowise.userservice.mapper.UserMapper;
 import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.repository.specification.UserSpecification;
 import com.innowise.userservice.service.UserQueryService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserQueryServiceImpl implements UserQueryService {
 
     private final UserRepository userRepository;

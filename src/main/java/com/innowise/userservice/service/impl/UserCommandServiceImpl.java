@@ -8,7 +8,7 @@ import com.innowise.userservice.exception.ResourceNotFoundException;
 import com.innowise.userservice.mapper.UserMapper;
 import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.service.UserCommandService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
