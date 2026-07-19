@@ -12,6 +12,9 @@ import com.innowise.userservice.repository.PaymentCardRepository;
 import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.service.PaymentCardCommandService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +29,14 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     private final PaymentCardRepository paymentCardRepository;
     private final PaymentCardMapper paymentCardMapper;
 
-    private final static int MAX_CARDS_PER_USER = 5;
     private final UserRepository userRepository;
+    private final RedisCacheManager cacheManager;
+
+    private final static int MAX_CARDS_PER_USER = 5;
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", key = "#dto.userId()")
     public PaymentCardResponseDto create(PaymentCardCreateDto dto) {
         long currentCardsQty = paymentCardRepository.countByUserId(dto.userId());
         if (currentCardsQty >= MAX_CARDS_PER_USER) {
@@ -46,6 +52,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", key = "#result.userId()")
     public PaymentCardResponseDto update(Long id, PaymentCardUpdateDto dto) {
         PaymentCard card = paymentCardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
@@ -59,6 +66,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
         PaymentCard card = paymentCardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
         card.setActive(true);
+        evictUserCache(card.getUser().getId());
     }
 
     @Override
@@ -67,5 +75,13 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
         PaymentCard card = paymentCardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
         card.setActive(false);
+        evictUserCache(card.getUser().getId());
+    }
+
+    private void evictUserCache(Long userId) {
+        Cache cache = cacheManager.getCache("users");
+        if (cache != null) {
+            cache.evict(userId);
+        }
     }
 }

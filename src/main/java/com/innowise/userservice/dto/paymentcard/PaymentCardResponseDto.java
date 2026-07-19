@@ -1,5 +1,6 @@
 package com.innowise.userservice.dto.paymentcard;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -16,4 +17,4 @@ public record PaymentCardResponseDto(
         Boolean active,
         Instant createdAt,
         Instant updatedAt
-) {}
+) implements Serializable {}

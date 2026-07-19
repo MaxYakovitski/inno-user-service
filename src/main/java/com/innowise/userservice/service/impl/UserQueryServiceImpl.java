@@ -8,6 +8,7 @@ import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.repository.specification.UserSpecification;
 import com.innowise.userservice.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,6 +28,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "users", key = "#id")
     public UserResponseDto getById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));

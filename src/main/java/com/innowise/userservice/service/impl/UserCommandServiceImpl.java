@@ -9,6 +9,7 @@ import com.innowise.userservice.mapper.UserMapper;
 import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.service.UserCommandService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", key = "#id")
     public UserResponseDto update(Long id, UserUpdateDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
@@ -41,12 +43,14 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", key = "#id")
     public void activate(Long id) {
         userRepository.updateActiveStatus(id, true);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", key = "#id")
     public void deactivate(Long id) {
         userRepository.updateActiveStatus(id, false);
     }
