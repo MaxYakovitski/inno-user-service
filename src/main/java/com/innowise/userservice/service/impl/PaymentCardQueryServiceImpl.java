@@ -2,6 +2,7 @@ package com.innowise.userservice.service.impl;
 
 import com.innowise.userservice.dto.paymentcard.PaymentCardResponseDto;
 import com.innowise.userservice.entity.PaymentCard;
+import com.innowise.userservice.exception.ResourceNotFoundException;
 import com.innowise.userservice.mapper.PaymentCardMapper;
 import com.innowise.userservice.repository.PaymentCardRepository;
 import com.innowise.userservice.repository.specification.PaymentCardSpecification;
@@ -30,7 +31,7 @@ public class PaymentCardQueryServiceImpl implements PaymentCardQueryService {
     @Transactional(readOnly = true)
     public PaymentCardResponseDto getById(Long id) {
         PaymentCard card = paymentCardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment card not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
         return paymentCardMapper.toDto(card);
     }
 
