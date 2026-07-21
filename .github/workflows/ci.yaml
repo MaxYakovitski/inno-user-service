@@ -50,13 +50,13 @@ jobs:
           restore-keys: ${{runner.os}}-m2
 
       - name: Run tests
-        run: mvn -B tests
+        run: mvn -B test
 
   #3 code analysis by SonarCloud
   sonar-analysis:
     name: Code Analysis
     runs-on: ubuntu-latest
-    needs: build
+    needs: test
     steps:
       - uses: actions/checkout@v4
         with:
@@ -92,4 +92,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
-        run: docker build -t user-service:${{github.sha}}
+        run: docker build -t user-service:${{github.sha}} .
