@@ -32,7 +32,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     private final UserRepository userRepository;
     private final RedisCacheManager cacheManager;
 
-    private final static int MAX_CARDS_PER_USER = 5;
+    private static final int MAX_CARDS_PER_USER = 5;
 
     @Override
     @Transactional
@@ -43,7 +43,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
             throw new CardLimitException("User: " + dto.userId() + " already has the maximum of " + MAX_CARDS_PER_USER + " cards");
         }
         User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + dto.userId()));
+                .orElseThrow(() -> ResourceNotFoundException.user(dto.userId()));
         PaymentCard card = paymentCardMapper.toEntity(dto);
         card.setUser(user);
         card.setActive(true);
@@ -55,7 +55,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     @CacheEvict(value = "users", key = "#result.userId()")
     public PaymentCardResponseDto update(Long id, PaymentCardUpdateDto dto) {
         PaymentCard card = paymentCardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         paymentCardMapper.updateEntity(dto, card);
         return paymentCardMapper.toDto(card);
     }
@@ -64,7 +64,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     @Transactional
     public void activate(Long id) {
         PaymentCard card = paymentCardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         card.setActive(true);
         evictUserCache(card.getUser().getId());
     }
@@ -73,7 +73,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     @Transactional
     public void deactivate(Long id) {
         PaymentCard card = paymentCardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         card.setActive(false);
         evictUserCache(card.getUser().getId());
     }

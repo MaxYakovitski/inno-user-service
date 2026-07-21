@@ -1,12 +1,15 @@
 package com.innowise.userservice.repository.specification;
 
 import com.innowise.userservice.entity.User;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
  * @author ma_yak
  */
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserSpecification {
 
     //filter by first name and surname (uses Specifications)

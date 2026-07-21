@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ class UserQueryServiceImplTest {
            .id(id)
            .name("Maxim")
            .surname("M")
-           .birthDate(LocalDate.of(1995, 1, 1))
+           .birthDate(LocalDate.of(1995, Month.JANUARY, 1))
            .email("m@test.com")
            .active(true)
             .cards(List.of())

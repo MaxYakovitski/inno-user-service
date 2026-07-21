@@ -20,6 +20,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +60,7 @@ class PaymentCardCommandServiceImplTest {
             userId,
             "1234123412341234",
             "Maxim Maximov",
-            LocalDate.of(2030, 1,1)
+            LocalDate.of(2030, Month.JANUARY,1)
     );
 
     PaymentCardUpdateDto paymentCardUpdateDto = new PaymentCardUpdateDto(null, "Maxim M", null);
@@ -69,13 +70,13 @@ class PaymentCardCommandServiceImplTest {
         PaymentCard fromDto = PaymentCard.builder()
                 .number("1234123412341234")
                 .holder("Maxim Maximov")
-                .expirationDate(LocalDate.of(2030, 1, 1))
+                .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
                 .build();
 
         PaymentCard savedPaymentCard = PaymentCard.builder()
                 .number("1234123412341234")
                 .holder("Maxim Maximov")
-                .expirationDate(LocalDate.of(2030, 1, 1))
+                .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
                 .build();
 
         PaymentCardResponseDto expected = new PaymentCardResponseDto(
@@ -83,7 +84,7 @@ class PaymentCardCommandServiceImplTest {
                 userId,
                 "1234123412341234",
                 "Maxim Maximov",
-                LocalDate.of(2030, 1,1),
+                LocalDate.of(2030, Month.JANUARY,1),
                 true,
                 now,
                 now
@@ -113,7 +114,7 @@ class PaymentCardCommandServiceImplTest {
                 .id(id)
                 .number("1234123412341234")
                 .holder("Maxim Maximov")
-                .expirationDate(LocalDate.of(2030, 1, 1))
+                .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
                 .active(true)
                 .createdAt(now)
                 .updatedAt(now)
@@ -124,7 +125,7 @@ class PaymentCardCommandServiceImplTest {
                 userId,
                 "1234123412341234",
                 "Maxim M",
-                LocalDate.of(2030, 1, 1),
+                LocalDate.of(2030, Month.JANUARY, 1),
                 true,
                 now,
                 Instant.now()

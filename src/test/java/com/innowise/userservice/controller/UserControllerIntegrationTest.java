@@ -11,6 +11,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
@@ -33,7 +34,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void create_should_persist_user_and_return_201() throws Exception {
-        UserCreateDto dto = new UserCreateDto("Maxim", "M", LocalDate.of(1995, 1, 1), "m@test.com");
+        UserCreateDto dto = new UserCreateDto("Maxim", "M", LocalDate.of(1995, Month.JANUARY, 1), "m@test.com");
 
         mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +53,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
         User user = User.builder()
                 .name("Maxim")
                 .surname("M")
-                .birthDate(LocalDate.of(1995, 1, 1))
+                .birthDate(LocalDate.of(1995, Month.JANUARY, 1))
                 .email("m@test.com")
                 .active(true)
                 .build();
@@ -78,7 +79,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
         User user = User.builder()
                 .name("Maxim")
                 .surname("M")
-                .birthDate(LocalDate.of(1995, 1, 1))
+                .birthDate(LocalDate.of(1995, Month.JANUARY, 1))
                 .email("m@test.com")
                 .active(true)
                 .build();

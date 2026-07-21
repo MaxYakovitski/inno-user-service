@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,7 @@ class PaymentCardQueryServiceImplTest {
             .id(id)
             .number("1234123412341234")
             .holder("Maxim M")
-            .expirationDate(LocalDate.of(2030, 1, 1))
+            .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
             .active(true)
             .createdAt(now)
             .updatedAt(now)

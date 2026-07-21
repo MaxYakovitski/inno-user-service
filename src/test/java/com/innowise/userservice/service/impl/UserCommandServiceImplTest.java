@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ class UserCommandServiceImplTest {
         UserCreateDto userCreateDto = new UserCreateDto(
             "Maxim",
             "Maximov",
-            LocalDate.of(1995,1,1),
+            LocalDate.of(1995, Month.JANUARY,1),
             "m@test.com");
 
         User userFromDto = User.builder().name("Maxim").surname("Maximov").build();
@@ -56,7 +57,7 @@ class UserCommandServiceImplTest {
             1L,
             "Maxim",
             "Maximov",
-            LocalDate.of(1995, 1, 1),
+            LocalDate.of(1995, Month.JANUARY, 1),
             "m@test.com",
             true,
             List.of(),
@@ -77,7 +78,7 @@ class UserCommandServiceImplTest {
                 .id(id)
                 .name("Maxim")
                 .surname("Maximov")
-                .birthDate(LocalDate.of(1995, 1, 1))
+                .birthDate(LocalDate.of(1995, Month.JANUARY, 1))
                 .email("m@test.com")
                 .active(true)
                 .createdAt(now)
@@ -88,7 +89,7 @@ class UserCommandServiceImplTest {
                 id,
                 "Maxim",
                 "Ivanov",
-                LocalDate.of(1995, 1, 1),
+                LocalDate.of(1995, Month.JANUARY, 1),
                 "m@test.com",
                 true,
                 List.of(),

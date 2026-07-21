@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author ma_yak
  */
 
-public class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
+class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -32,7 +33,7 @@ public class PaymentCardControllerIntegrationTest extends AbstractIntegrationTes
         User user = userRepository.save(User.builder()
                 .name("Maxim")
                 .surname("Maximov")
-                .birthDate(LocalDate.of(1995, 1, 1))
+                .birthDate(LocalDate.of(1995, Month.JANUARY, 1))
                 .email("m@test.com")
                 .active(true)
                 .build());
@@ -42,7 +43,7 @@ public class PaymentCardControllerIntegrationTest extends AbstractIntegrationTes
                     .user(user)
                     .number("123412341234" + i)
                     .holder("Maxim Maximov")
-                    .expirationDate(LocalDate.of(2030,1,1))
+                    .expirationDate(LocalDate.of(2030,Month.JANUARY,1))
                     .active(true)
                     .build());
         }
@@ -51,7 +52,7 @@ public class PaymentCardControllerIntegrationTest extends AbstractIntegrationTes
                 user.getId(),
                 "1234123412349999",
                 "Maxim Maximov",
-                LocalDate.of(2030, 1, 1));
+                LocalDate.of(2030, Month.JANUARY, 1));
 
         mockMvc.perform(post("/api/payment_cards")
                         .contentType(MediaType.APPLICATION_JSON)
