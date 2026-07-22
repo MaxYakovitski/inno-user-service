@@ -18,6 +18,8 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -53,7 +55,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     @Override
     @Transactional
     @CacheEvict(value = "users", key = "#result.userId()")
-    public PaymentCardResponseDto update(Long id, PaymentCardUpdateDto dto) {
+    public PaymentCardResponseDto update(UUID id, PaymentCardUpdateDto dto) {
         PaymentCard card = paymentCardRepository.findById(id)
                 .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         paymentCardMapper.updateEntity(dto, card);
@@ -62,7 +64,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
 
     @Override
     @Transactional
-    public void activate(Long id) {
+    public void activate(UUID id) {
         PaymentCard card = paymentCardRepository.findById(id)
                 .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         card.setActive(true);
@@ -71,14 +73,14 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
 
     @Override
     @Transactional
-    public void deactivate(Long id) {
+    public void deactivate(UUID id) {
         PaymentCard card = paymentCardRepository.findById(id)
                 .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         card.setActive(false);
         evictUserCache(card.getUser().getId());
     }
 
-    private void evictUserCache(Long userId) {
+    private void evictUserCache(UUID userId) {
         Cache cache = cacheManager.getCache("users");
         if (cache != null) {
             cache.evict(userId);

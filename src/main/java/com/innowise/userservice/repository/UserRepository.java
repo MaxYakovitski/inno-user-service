@@ -7,16 +7,18 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
 
-public interface UserRepository extends JpaRepository<User, Long>,
+public interface UserRepository extends JpaRepository<User, UUID>,
                                         JpaSpecificationExecutor<User> {
 
     // JPQL, activates or deactivates user
     @Modifying
     @Query("UPDATE User u SET u.active = :active WHERE u.id = :id")
-    int updateActiveStatus(@Param("id") Long id, @Param("active") boolean active);
+    void updateActiveStatus(@Param("id") UUID id, @Param("active") boolean active);
 
 }

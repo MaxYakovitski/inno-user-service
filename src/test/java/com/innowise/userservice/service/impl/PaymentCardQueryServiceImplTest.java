@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -32,16 +33,16 @@ import static org.assertj.core.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class PaymentCardQueryServiceImplTest {
 
-    @InjectMocks
-    private PaymentCardQueryServiceImpl paymentCardQueryService;
-
     @Mock
     private PaymentCardRepository paymentCardRepository;
 
     @Mock
     private PaymentCardMapper paymentCardMapper;
 
-    Long id = 1L;
+    @InjectMocks
+    private PaymentCardQueryServiceImpl paymentCardQueryService;
+
+    UUID id = UUID.randomUUID();
     Instant now = Instant.now();
     User user = User.builder().id(id).build();
 
@@ -69,7 +70,6 @@ class PaymentCardQueryServiceImplTest {
     void getById_should_return_payment_card_response_dto_when_card_exists() {
         when(paymentCardRepository.findById(id)).thenReturn(Optional.of(card));
         when(paymentCardMapper.toDto(card)).thenReturn(expectedDto);
-
         PaymentCardResponseDto result = paymentCardQueryService.getById(id);
         assertThat(result).isEqualTo(expectedDto);
 
@@ -78,10 +78,10 @@ class PaymentCardQueryServiceImplTest {
     @Test
     void getById_should_throw_resource_not_found_exception_when_card_not_found() {
         when(paymentCardRepository.findById(id)).thenReturn(Optional.empty());
+        verify(paymentCardMapper, never()).toDto(any());
         assertThatThrownBy(() -> paymentCardQueryService.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Payment card not found: " + id);
-        verify(paymentCardMapper, never()).toDto(any());
     }
 
     List<PaymentCard> list = List.of(card);

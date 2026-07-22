@@ -1,4 +1,4 @@
-package com.innowise.userservice.repository.specification;
+package com.innowise.userservice.specification;
 
 import com.innowise.userservice.entity.User;
 import lombok.AccessLevel;

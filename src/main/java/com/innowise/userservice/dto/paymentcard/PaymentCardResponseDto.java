@@ -3,14 +3,15 @@ package com.innowise.userservice.dto.paymentcard;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * @author ma_yak
  */
 
 public record PaymentCardResponseDto(
-        Long id,
-        Long userId,
+        UUID id,
+        UUID userId,
         String number,
         String holder,
         LocalDate expirationDate,

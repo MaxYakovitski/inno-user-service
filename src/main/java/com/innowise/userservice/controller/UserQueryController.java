@@ -9,6 +9,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -21,7 +23,7 @@ public class UserQueryController {
     private final UserQueryService userQueryService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDto> getById(@PathVariable UUID id) {
        return ResponseEntity.ok(userQueryService.getById(id));
     }
 

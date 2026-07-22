@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ma_yak
@@ -23,12 +24,12 @@ public class PaymentCardQueryController {
     private final PaymentCardQueryService paymentCardQueryService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentCardResponseDto> getById(@PathVariable Long id) {
+    public ResponseEntity<PaymentCardResponseDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(paymentCardQueryService.getById(id));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PaymentCardResponseDto>> getAllByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<PaymentCardResponseDto>> getAllByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(paymentCardQueryService.getAllByUserId(userId));
     }
 

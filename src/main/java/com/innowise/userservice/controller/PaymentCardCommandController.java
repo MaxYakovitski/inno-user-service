@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -28,19 +30,19 @@ public class PaymentCardCommandController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<PaymentCardResponseDto> update(@PathVariable Long id, @Valid @RequestBody PaymentCardUpdateDto dto) {
+    public ResponseEntity<PaymentCardResponseDto> update(@PathVariable UUID id, @Valid @RequestBody PaymentCardUpdateDto dto) {
         PaymentCardResponseDto updated = paymentCardCommandService.update(id, dto);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
     @PatchMapping("/{id}/activate")
-    public ResponseEntity<Void> activate(@PathVariable Long id) {
+    public ResponseEntity<Void> activate(@PathVariable UUID id) {
         paymentCardCommandService.activate(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+    public ResponseEntity<Void> deactivate(@PathVariable UUID id) {
         paymentCardCommandService.deactivate(id);
         return ResponseEntity.noContent().build();
     }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ma_yak
@@ -12,8 +13,8 @@ import java.util.List;
 
 public interface PaymentCardQueryService {
 
-    PaymentCardResponseDto getById(Long id);
-    List <PaymentCardResponseDto> getAllByUserId(Long userId);
+    PaymentCardResponseDto getById(UUID id);
+    List <PaymentCardResponseDto> getAllByUserId(UUID userId);
 
     Page<PaymentCardResponseDto> getAll(String holder, Pageable pageable);
 }

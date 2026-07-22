@@ -1,5 +1,7 @@
 package com.innowise.userservice.exception;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -9,11 +11,11 @@ public class ResourceNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public static  ResourceNotFoundException paymentCard(Long id) {
+    public static  ResourceNotFoundException paymentCard(UUID id) {
         return new ResourceNotFoundException("Payment card not found: " + id);
     }
 
-    public static  ResourceNotFoundException user(Long id) {
+    public static  ResourceNotFoundException user(UUID id) {
         return new ResourceNotFoundException("User not found: " + id);
     }
 }

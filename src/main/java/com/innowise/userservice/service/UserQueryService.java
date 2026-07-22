@@ -4,12 +4,14 @@ import com.innowise.userservice.dto.user.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
 
 public interface UserQueryService {
 
-    UserResponseDto getById(Long id);
+    UserResponseDto getById(UUID id);
     Page<UserResponseDto> getAll(String name, String surname, Pageable pageable);
 }

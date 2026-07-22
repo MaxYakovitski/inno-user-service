@@ -1,9 +1,8 @@
 package com.innowise.userservice.exception;
 
-import com.innowise.userservice.dto.error.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,31 +16,35 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class UserServiceExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleNotFound (ResourceNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(new ErrorResponseDto("not_found", e.getMessage()));
+    public ProblemDetail handleNotFound (ResourceNotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problem.setProperty("code", "not_found");
+        return problem;
     }
 
     @ExceptionHandler(CardLimitException.class)
-    public ResponseEntity<ErrorResponseDto> handleCardLimit(CardLimitException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                             .body(new ErrorResponseDto("card_limit_exceeded", e.getMessage()));
+    public ProblemDetail handleCardLimit(CardLimitException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problem.setProperty("code", "card_limit_exceeded");
+        return problem;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleValidation(MethodArgumentNotValidException e) {
+    public ProblemDetail handleValidation(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()
                 .findFirst()
                 .map(f -> f.getField() + ":" + f.getDefaultMessage())
                 .orElse("Validation failed");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(new ErrorResponseDto("validation_failed", message));
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
+        problem.setProperty("code", "validation_failed");
+        return problem;
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleUnexpected(Exception e) {
+    public ProblemDetail handleUnexpected(Exception e) {
         log.error("unexpected error", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponseDto("internal_error", "Internal Server Error"));
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        problem.setProperty("code", "internal_error");
+        return problem;
     }
 }

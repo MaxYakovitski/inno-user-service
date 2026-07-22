@@ -4,6 +4,8 @@ import com.innowise.userservice.dto.user.UserCreateDto;
 import com.innowise.userservice.dto.user.UserResponseDto;
 import com.innowise.userservice.dto.user.UserUpdateDto;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -11,8 +13,8 @@ import com.innowise.userservice.dto.user.UserUpdateDto;
 public interface UserCommandService {
 
     UserResponseDto create(UserCreateDto dto);
-    UserResponseDto update(Long id, UserUpdateDto dto);
+    UserResponseDto update(UUID id, UserUpdateDto dto);
 
-    void activate(Long id);
-    void deactivate(Long id);
+    void activate(UUID id);
+    void deactivate(UUID id);
 }

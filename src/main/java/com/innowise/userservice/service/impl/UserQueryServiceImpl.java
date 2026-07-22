@@ -5,7 +5,7 @@ import com.innowise.userservice.entity.User;
 import com.innowise.userservice.exception.ResourceNotFoundException;
 import com.innowise.userservice.mapper.UserMapper;
 import com.innowise.userservice.repository.UserRepository;
-import com.innowise.userservice.repository.specification.UserSpecification;
+import com.innowise.userservice.specification.UserSpecification;
 import com.innowise.userservice.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 /**
  * @author ma_yak
@@ -29,7 +31,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "users", key = "#id")
-    public UserResponseDto getById(Long id) {
+    public UserResponseDto getById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
         return userMapper.toDto(user);

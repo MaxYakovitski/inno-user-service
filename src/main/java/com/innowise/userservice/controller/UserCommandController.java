@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -28,19 +30,19 @@ public class UserCommandController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDto> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDto dto) {
+    public ResponseEntity<UserResponseDto> update(@PathVariable UUID id, @Valid @RequestBody UserUpdateDto dto) {
         UserResponseDto updated = userCommandService.update(id, dto);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
     @PatchMapping("/{id}/activate")
-    public ResponseEntity<Void> activate(@PathVariable Long id) {
+    public ResponseEntity<Void> activate(@PathVariable UUID id) {
         userCommandService.activate(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+    public ResponseEntity<Void> deactivate(@PathVariable UUID id) {
         userCommandService.deactivate(id);
         return ResponseEntity.noContent().build();
     }

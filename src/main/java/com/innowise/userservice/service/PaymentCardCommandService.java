@@ -4,6 +4,8 @@ import com.innowise.userservice.dto.paymentcard.PaymentCardCreateDto;
 import com.innowise.userservice.dto.paymentcard.PaymentCardResponseDto;
 import com.innowise.userservice.dto.paymentcard.PaymentCardUpdateDto;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -11,8 +13,8 @@ import com.innowise.userservice.dto.paymentcard.PaymentCardUpdateDto;
 public interface PaymentCardCommandService {
 
     PaymentCardResponseDto create(PaymentCardCreateDto dto);
-    PaymentCardResponseDto update(Long id, PaymentCardUpdateDto dto);
+    PaymentCardResponseDto update(UUID id, PaymentCardUpdateDto dto);
 
-    void activate(Long id);
-    void deactivate(Long id);
+    void activate(UUID id);
+    void deactivate(UUID id);
 }

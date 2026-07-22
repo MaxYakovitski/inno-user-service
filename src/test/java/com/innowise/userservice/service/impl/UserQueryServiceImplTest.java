@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,16 +32,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserQueryServiceImplTest {
 
-    @InjectMocks
-    private UserQueryServiceImpl userQueryService;
-
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private UserMapper userMapper;
 
-    Long id = 1L;
+    @InjectMocks
+    private UserQueryServiceImpl userQueryService;
+
+    UUID id = UUID.randomUUID();
     Instant now = Instant.now();
 
     User user = User.builder()
@@ -79,10 +80,10 @@ class UserQueryServiceImplTest {
     @Test
     void getById_should_throw_resource_not_found_exception_when_user_not_found() {
         when(userRepository.findById(id)).thenReturn(Optional.empty());
+        verify(userMapper, never()).toDto(any());
         assertThatThrownBy(() -> userQueryService.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("User not found: " + id);
-        verify(userMapper, never()).toDto(any());
     }
 
     Page<User> page = new PageImpl<>(List.of(user));

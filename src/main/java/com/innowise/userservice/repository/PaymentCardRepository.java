@@ -5,27 +5,28 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ma_yak
  */
 
-public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long>,
+public interface PaymentCardRepository extends JpaRepository<PaymentCard, UUID>,
                                                JpaSpecificationExecutor<PaymentCard> {
 
     //named method, gets all cards by user userId
-    List<PaymentCard> findByUserId(Long userId);
+    List<PaymentCard> findByUserId(UUID userId);
 
     // JPQL, card counting for limiting
     @Query("SELECT count(c) FROM PaymentCard c WHERE c.user.id = :userId")
-    long countByUserId(@Param("userId") Long userId);
+    long countByUserId(@Param("userId") UUID userId);
 
     //native SQL just for example because there is a standard named method for this
     @NativeQuery(value = "SELECT * FROM payment_cards WHERE user_id = :userId AND active = true")
-    List<PaymentCard> findActiveCardsByUserIdNative(@Param("userId") Long userId);
+    List<PaymentCard> findActiveCardsByUserIdNative(@Param("userId") UUID userId);
 
     // JPQL, activates or deactivates card
     @Modifying
     @Query("UPDATE PaymentCard c SET c.active = :active WHERE c.id = :id")
-    int updateActivateStatus(@Param("id") Long id, @Param("active") boolean active);
+    int updateActivateStatus(@Param("id") UUID id, @Param("active") boolean active);
 }

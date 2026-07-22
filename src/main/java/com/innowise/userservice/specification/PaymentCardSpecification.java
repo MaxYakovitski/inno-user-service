@@ -1,4 +1,4 @@
-package com.innowise.userservice.repository.specification;
+package com.innowise.userservice.specification;
 
 import com.innowise.userservice.entity.PaymentCard;
 import lombok.AccessLevel;

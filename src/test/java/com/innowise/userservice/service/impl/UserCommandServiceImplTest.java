@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -29,16 +30,16 @@ import static org.assertj.core.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class UserCommandServiceImplTest {
 
-    @InjectMocks
-    private UserCommandServiceImpl userCommandService;
-
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private UserMapper userMapper;
 
-    Long id = 1L;
+    @InjectMocks
+    private UserCommandServiceImpl userCommandService;
+
+    UUID id = UUID.randomUUID();
     Instant now = Instant.now();
     UserUpdateDto userUpdateDto = new UserUpdateDto(null, "Ivanov", null, null);
 
@@ -54,7 +55,7 @@ class UserCommandServiceImplTest {
         User savedUser = User.builder().name("Maxim").surname("Maximov").build();
 
         UserResponseDto expectedDto = new UserResponseDto(
-            1L,
+            id,
             "Maxim",
             "Maximov",
             LocalDate.of(1995, Month.JANUARY, 1),
@@ -107,11 +108,11 @@ class UserCommandServiceImplTest {
     @Test
     void update_should_throw_resource_not_found_exception_when_user_not_found() {
         when(userRepository.findById(id)).thenReturn(Optional.empty());
+        verify(userMapper, never()).updateEntity(any(), any());
+        verify(userMapper, never()).toDto(any());
         assertThatThrownBy(() -> userCommandService.update(id, userUpdateDto))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("User not found: " + id);
-        verify(userMapper, never()).updateEntity(any(), any());
-        verify(userMapper, never()).toDto(any());
     }
 
     @Test

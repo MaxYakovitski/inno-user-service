@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -62,13 +63,13 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(get("/api/users/" + saved.getId()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").value(saved.getId()))
+        .andExpect(jsonPath("$.id").value(saved.getId().toString()))
         .andExpect(jsonPath("$.name").value(saved.getName()));
     }
 
     @Test
     void get_should_return_404_when_not_exists() throws Exception {
-        long nonExistentId = Long.MAX_VALUE;
+        UUID nonExistentId = UUID.randomUUID();
         mockMvc.perform(get("/api/users/" + nonExistentId))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("not_found"));

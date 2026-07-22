@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,9 +34,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentCardCommandServiceImplTest {
-
-    @InjectMocks
-    private PaymentCardCommandServiceImpl paymentCardCommandService;
 
     @Mock
     private PaymentCardRepository paymentCardRepository;
@@ -52,8 +50,11 @@ class PaymentCardCommandServiceImplTest {
     @Mock
     Cache cache;
 
-    Long id = 1L;
-    Long userId = 1L;
+    @InjectMocks
+    private PaymentCardCommandServiceImpl paymentCardCommandService;
+
+    UUID id = UUID.randomUUID();
+    UUID userId = UUID.randomUUID();
     Instant now = Instant.now();
     User user = User.builder().id(userId).build();
     PaymentCardCreateDto paymentCardCreateDto = new PaymentCardCreateDto(
@@ -90,7 +91,7 @@ class PaymentCardCommandServiceImplTest {
                 now
         );
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(paymentCardRepository.countByUserId(userId)).thenReturn(0L);
         when(paymentCardMapper.toEntity(paymentCardCreateDto)).thenReturn(fromDto);
         when(paymentCardRepository.save(fromDto)).thenReturn(savedPaymentCard);
@@ -103,9 +104,9 @@ class PaymentCardCommandServiceImplTest {
     @Test
     void create_should_throw_exception_when_card_limit_exceeded() {
         when(paymentCardRepository.countByUserId(userId)).thenReturn(5L);
+        verify(paymentCardRepository, never()).save(any());
         assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
                 .isInstanceOf(CardLimitException.class);
-        verify(paymentCardRepository, never()).save(any());
     }
 
     @Test
@@ -143,11 +144,11 @@ class PaymentCardCommandServiceImplTest {
     @Test
     void update_should_throw_resource_not_found_exception_when_card_not_found() {
         when(paymentCardRepository.findById(id)).thenReturn(Optional.empty());
+        verify(paymentCardMapper, never()).updateEntity(any(), any());
+        verify(paymentCardMapper, never()).toDto(any());
         assertThatThrownBy(() -> paymentCardCommandService.update(id, paymentCardUpdateDto))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Payment card not found: " + id);
-        verify(paymentCardMapper, never()).updateEntity(any(), any());
-        verify(paymentCardMapper, never()).toDto(any());
     }
 
     @Test
@@ -158,18 +159,17 @@ class PaymentCardCommandServiceImplTest {
         when(cacheManager.getCache("users")).thenReturn(cache);
 
         paymentCardCommandService.activate(id);
-        assertThat(card.getActive()).isTrue();
         verify(cache).evict(userId);
+        assertThat(card.getActive()).isTrue();
     }
 
     @Test
     void activate_should_throw_resource_not_found_exception_when_card_not_found() {
         when(paymentCardRepository.findById(id)).thenReturn(Optional.empty());
+        verify(cache, never()).evict(any());
         assertThatThrownBy(() -> paymentCardCommandService.activate(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Payment card not found: " + id);
-
-        verify(cache, never()).evict(any());
     }
 
     @Test
@@ -180,20 +180,18 @@ class PaymentCardCommandServiceImplTest {
         when(cacheManager.getCache("users")).thenReturn(cache);
 
         paymentCardCommandService.deactivate(id);
-        assertThat(card.getActive()).isFalse();
         verify(cache).evict(userId);
+        assertThat(card.getActive()).isFalse();
     }
 
     @Test
     void deactivate_should_throw_resource_not_found_exception_when_card_not_found() {
         when(paymentCardRepository.findById(id)).thenReturn(Optional.empty());
+        verify(cache, never()).evict(any());
         assertThatThrownBy(() -> paymentCardCommandService.deactivate(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Payment card not found: " + id);
 
-        verify(cache, never()).evict(any());
     }
-
-
 
 }

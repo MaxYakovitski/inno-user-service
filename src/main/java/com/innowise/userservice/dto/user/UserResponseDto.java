@@ -6,13 +6,14 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ma_yak
  */
 
 public record UserResponseDto(
-        Long id,
+        UUID id,
         String name,
         String surname,
         LocalDate birthDate,

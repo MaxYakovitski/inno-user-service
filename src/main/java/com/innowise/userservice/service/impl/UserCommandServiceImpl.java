@@ -13,6 +13,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * @author ma_yak
  */
@@ -34,7 +36,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     @Transactional
     @CacheEvict(value = "users", key = "#id")
-    public UserResponseDto update(Long id, UserUpdateDto dto) {
+    public UserResponseDto update(UUID id, UserUpdateDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
         userMapper.updateEntity(dto, user);
@@ -44,14 +46,14 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     @Transactional
     @CacheEvict(value = "users", key = "#id")
-    public void activate(Long id) {
+    public void activate(UUID id) {
         userRepository.updateActiveStatus(id, true);
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "users", key = "#id")
-    public void deactivate(Long id) {
+    public void deactivate(UUID id) {
         userRepository.updateActiveStatus(id, false);
     }
 }
