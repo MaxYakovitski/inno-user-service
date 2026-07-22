@@ -4,6 +4,7 @@ import com.innowise.userservice.entity.PaymentCard;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 /**
  * @author ma_yak
@@ -16,6 +17,8 @@ public class PaymentCardSpecification {
 
     public static Specification<PaymentCard> hasHolder (String holder) {
         return ((root, query, cb)
-                -> cb.like(cb.lower(root.get("holder")), "%" + holder.toLowerCase() + "%"));
+                -> StringUtils.hasText(holder)
+        ? cb.like(cb.lower(root.get("holder")), "%" + holder.toLowerCase() + "%")
+        : null);
     }
 }

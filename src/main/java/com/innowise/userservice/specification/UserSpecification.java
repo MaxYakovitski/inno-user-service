@@ -4,6 +4,7 @@ import com.innowise.userservice.entity.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 /**
  * @author ma_yak
@@ -16,11 +17,15 @@ public class UserSpecification {
 
     public static Specification<User> hasName(String name) {
         return ((root, query, cb) ->
-                name == null ? null : cb.like(cb.lower(root.get("name")), "%" + name + "%"));
+                StringUtils.hasText(name)
+                ? cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%")
+                : null);
     }
 
     public static Specification<User> hasSurname(String surname) {
         return ((root, query, cb) ->
-                surname == null ? null : cb.like(cb.lower(root.get("surname")), "%" + surname + "%"));
+                StringUtils.hasText(surname)
+                ? cb.like(cb.lower(root.get("surname")), "%" + surname.toLowerCase() + "%")
+                : null);
     }
 }
