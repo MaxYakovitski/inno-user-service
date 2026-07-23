@@ -70,7 +70,7 @@ class UserQueryServiceImplTest {
 
     @Test
     void getById_should_return_user_response_dto_when_user_exists() {
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.findByIdWithPaymentCards(id)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(expectedDto);
 
         UserResponseDto result = userQueryService.getById(id);
@@ -79,7 +79,7 @@ class UserQueryServiceImplTest {
 
     @Test
     void getById_should_throw_resource_not_found_exception_when_user_not_found() {
-        when(userRepository.findById(id)).thenReturn(Optional.empty());
+        when(userRepository.findByIdWithPaymentCards(id)).thenReturn(Optional.empty());
         verify(userMapper, never()).toDto(any());
         assertThatThrownBy(() -> userQueryService.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)

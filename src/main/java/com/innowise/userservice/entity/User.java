@@ -43,6 +43,6 @@ public class User extends AbstractAuditingEntity {
     private Boolean active;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true,  fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<PaymentCard> cards = new ArrayList<>();
 }

@@ -24,8 +24,7 @@ import java.time.Month;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -56,12 +55,34 @@ class PaymentCardCommandServiceImplTest {
     UUID id = UUID.randomUUID();
     UUID userId = UUID.randomUUID();
     Instant now = Instant.now();
-    User user = User.builder().id(userId).build();
+
+    User savedUser = User.builder().id(userId).build();
+
     PaymentCardCreateDto paymentCardCreateDto = new PaymentCardCreateDto(
             userId,
             "1234123412341234",
             "Maxim Maximov",
             LocalDate.of(2030, Month.JANUARY,1)
+    );
+
+    PaymentCard savedCard = PaymentCard.builder()
+            .id(id)
+            .user(savedUser)
+            .number("1234123412341234")
+            .holder("Maxim Maximov")
+            .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
+            .active(true)
+            .build();
+
+    PaymentCardResponseDto expected = new PaymentCardResponseDto(
+            id,
+            userId,
+            "1234123412341234",
+            "Maxim Maximov",
+            LocalDate.of(2030, Month.JANUARY,1),
+            true,
+            now,
+            now
     );
 
     PaymentCardUpdateDto paymentCardUpdateDto = new PaymentCardUpdateDto(null, "Maxim M", null);
@@ -74,31 +95,22 @@ class PaymentCardCommandServiceImplTest {
                 .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
                 .build();
 
-        PaymentCard savedPaymentCard = PaymentCard.builder()
-                .number("1234123412341234")
-                .holder("Maxim Maximov")
-                .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
-                .build();
-
-        PaymentCardResponseDto expected = new PaymentCardResponseDto(
-                id,
-                userId,
-                "1234123412341234",
-                "Maxim Maximov",
-                LocalDate.of(2030, Month.JANUARY,1),
-                true,
-                now,
-                now
-        );
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(savedUser));
         when(paymentCardRepository.countByUserId(userId)).thenReturn(0L);
         when(paymentCardMapper.toEntity(paymentCardCreateDto)).thenReturn(fromDto);
-        when(paymentCardRepository.save(fromDto)).thenReturn(savedPaymentCard);
-        when(paymentCardMapper.toDto(savedPaymentCard)).thenReturn(expected);
+        when(paymentCardRepository.save(fromDto)).thenReturn(savedCard);
+        when(paymentCardMapper.toDto(savedCard)).thenReturn(expected);
 
         PaymentCardResponseDto actualDto = paymentCardCommandService.create(paymentCardCreateDto);
         assertThat(actualDto).isEqualTo(expected);
+    }
+
+    @Test
+    void create_should_throw_resource_not_found_exception_when_user_id_not_found() {
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        verify(paymentCardRepository, never()).save(any());
+        assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -111,33 +123,12 @@ class PaymentCardCommandServiceImplTest {
 
     @Test
     void update_should_return_paymentCardResponseDto() {
-        PaymentCard existingCard = PaymentCard.builder()
-                .id(id)
-                .number("1234123412341234")
-                .holder("Maxim Maximov")
-                .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
-                .active(true)
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
-
-        PaymentCardResponseDto expectedDto = new PaymentCardResponseDto(
-                id,
-                userId,
-                "1234123412341234",
-                "Maxim M",
-                LocalDate.of(2030, Month.JANUARY, 1),
-                true,
-                now,
-                Instant.now()
-        );
-
-        when(paymentCardRepository.findById(id)).thenReturn(Optional.of(existingCard));
-        when(paymentCardMapper.toDto(existingCard)).thenReturn(expectedDto);
+        when(paymentCardRepository.findById(id)).thenReturn(Optional.of(savedCard));
+        when(paymentCardMapper.toDto(savedCard)).thenReturn(expected);
 
         PaymentCardResponseDto actualCard = paymentCardCommandService.update(id, paymentCardUpdateDto);
-        verify(paymentCardMapper).updateEntity(paymentCardUpdateDto, existingCard);
-        assertThat(actualCard).isEqualTo(expectedDto);
+        verify(paymentCardMapper).updateEntity(paymentCardUpdateDto, savedCard);
+        assertThat(actualCard).isEqualTo(expected);
 
     }
 
@@ -153,7 +144,7 @@ class PaymentCardCommandServiceImplTest {
 
     @Test
     void activate_should_set_active_true_and_evict_cache() {
-        PaymentCard card = PaymentCard.builder().id(id).user(user).active(false).build();
+        PaymentCard card = PaymentCard.builder().id(id).user(savedUser).active(false).build();
 
         when(paymentCardRepository.findById(id)).thenReturn(Optional.of(card));
         when(cacheManager.getCache("users")).thenReturn(cache);
@@ -173,8 +164,17 @@ class PaymentCardCommandServiceImplTest {
     }
 
     @Test
+    void activate_should_not_throw_when_cache_is_null() {
+        when(paymentCardRepository.findById(id)).thenReturn(Optional.of(savedCard));
+        when(cacheManager.getCache("users")).thenReturn(null);
+
+        assertThatCode(() -> paymentCardCommandService.activate(id))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     void deactivate_should_set_active_false_and_evict_cache() {
-        PaymentCard card = PaymentCard.builder().id(id).user(user).active(true).build();
+        PaymentCard card = PaymentCard.builder().id(id).user(savedUser).active(true).build();
 
         when(paymentCardRepository.findById(id)).thenReturn(Optional.of(card));
         when(cacheManager.getCache("users")).thenReturn(cache);

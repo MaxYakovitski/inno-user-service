@@ -32,8 +32,8 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Transactional(readOnly = true)
     @Cacheable(value = "users", key = "#id")
     public UserResponseDto getById(UUID id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+        User user = userRepository.findByIdWithPaymentCards(id)
+                .orElseThrow(() -> ResourceNotFoundException.user(id));
         return userMapper.toDto(user);
     }
 

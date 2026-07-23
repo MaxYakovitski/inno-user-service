@@ -14,7 +14,7 @@ databaseChangeLog:
               - column: { name: expiration_date, type: DATE, constraints: { nullable: false } }
               - column: { name: active, type: BOOLEAN, defaultValueBoolean: true, constraints: { nullable: false } }
               - column: { name: created_at, type: TIMESTAMPTZ, constraints: { nullable: false } }
-              - column: { name: updated_at, type: TIMESTAMPTZ }
+              - column: { name: updated_at, type: TIMESTAMPTZ , constraints: { nullable: false } }
         - createIndex:
             indexName: idx_payment_cards_user_id
             tableName: payment_cards

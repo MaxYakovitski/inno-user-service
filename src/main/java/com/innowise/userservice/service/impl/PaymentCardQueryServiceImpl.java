@@ -32,7 +32,7 @@ public class PaymentCardQueryServiceImpl implements PaymentCardQueryService {
     @Transactional(readOnly = true)
     public PaymentCardResponseDto getById(UUID id) {
         PaymentCard card = paymentCardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment card not found: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.paymentCard(id));
         return paymentCardMapper.toDto(card);
     }
 
