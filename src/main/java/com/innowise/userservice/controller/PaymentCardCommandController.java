@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
+
 
 @RestController
 @RequestMapping("/api/payment_cards")
@@ -38,13 +36,13 @@ public class PaymentCardCommandController {
     @PatchMapping("/{id}/activate")
     public ResponseEntity<Void> activate(@PathVariable UUID id) {
         paymentCardCommandService.activate(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivate(@PathVariable UUID id) {
         paymentCardCommandService.deactivate(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

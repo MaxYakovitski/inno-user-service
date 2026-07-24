@@ -7,10 +7,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 public interface PaymentCardQueryService {
 
     PaymentCardResponseDto getById(UUID id);

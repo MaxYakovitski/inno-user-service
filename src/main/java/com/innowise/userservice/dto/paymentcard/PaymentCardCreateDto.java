@@ -7,9 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
+
 
 public record PaymentCardCreateDto(
         @NotNull UUID userId,

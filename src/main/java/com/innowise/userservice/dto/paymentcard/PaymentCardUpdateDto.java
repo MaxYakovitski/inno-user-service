@@ -6,9 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-/**
- * @author ma_yak
- */
+
 
 public record PaymentCardUpdateDto(
         @NotBlank @Size(max = 32) String number,

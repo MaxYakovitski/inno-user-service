@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
-/**
- * @author ma_yak
- */
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaymentCardSpecification {
 

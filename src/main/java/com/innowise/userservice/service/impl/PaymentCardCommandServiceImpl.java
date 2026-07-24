@@ -20,10 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 @Service
 @RequiredArgsConstructor
 public class PaymentCardCommandServiceImpl implements PaymentCardCommandService {

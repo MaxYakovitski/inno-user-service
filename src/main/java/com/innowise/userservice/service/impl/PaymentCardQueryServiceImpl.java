@@ -17,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 @Service
 @RequiredArgsConstructor
 public class PaymentCardQueryServiceImpl implements PaymentCardQueryService {

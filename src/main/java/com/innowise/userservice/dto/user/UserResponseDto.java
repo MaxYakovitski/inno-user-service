@@ -8,10 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 public record UserResponseDto(
         UUID id,
         String name,

@@ -6,10 +6,6 @@ import com.innowise.userservice.dto.user.UserUpdateDto;
 
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 public interface UserCommandService {
 
     UserResponseDto create(UserCreateDto dto);

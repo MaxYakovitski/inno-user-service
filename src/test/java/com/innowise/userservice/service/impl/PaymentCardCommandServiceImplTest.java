@@ -27,10 +27,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * @author ma_yak
- */
-
 @ExtendWith(MockitoExtension.class)
 class PaymentCardCommandServiceImplTest {
 

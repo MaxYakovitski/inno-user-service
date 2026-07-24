@@ -13,10 +13,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author ma_yak
- */
-
 @ExtendWith(MockitoExtension.class)
 class UserSpecificationTest {
 

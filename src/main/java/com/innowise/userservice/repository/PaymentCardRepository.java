@@ -7,10 +7,6 @@ import org.springframework.data.jpa.repository.*;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 public interface PaymentCardRepository extends JpaRepository<PaymentCard, UUID>,
                                                JpaSpecificationExecutor<PaymentCard> {
 

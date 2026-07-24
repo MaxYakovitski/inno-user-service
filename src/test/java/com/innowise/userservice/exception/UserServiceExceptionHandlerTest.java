@@ -6,10 +6,6 @@ import org.springframework.http.ProblemDetail;
 
 import static org.assertj.core.api.Assertions.*;
 
-/**
- * @author ma_yak
- */
-
 class UserServiceExceptionHandlerTest {
 
     private final UserServiceExceptionHandler handler = new UserServiceExceptionHandler();

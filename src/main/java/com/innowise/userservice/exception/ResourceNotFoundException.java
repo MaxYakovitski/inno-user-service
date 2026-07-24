@@ -2,10 +2,6 @@ package com.innowise.userservice.exception;
 
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {
         super(message);

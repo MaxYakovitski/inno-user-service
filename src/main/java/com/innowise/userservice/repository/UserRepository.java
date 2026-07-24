@@ -10,9 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
 
 public interface UserRepository extends JpaRepository<User, UUID>,
                                         JpaSpecificationExecutor<User> {

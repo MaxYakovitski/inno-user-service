@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 @Entity
 @Getter
 @Setter

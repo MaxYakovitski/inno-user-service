@@ -13,10 +13,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import static org.assertj.core.api.Assertions.*;
 
-/**
- * @author ma_yak
- */
-
 @ExtendWith(MockitoExtension.class)
 class PaymentCardSpecificationTest {
 

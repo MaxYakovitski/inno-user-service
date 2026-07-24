@@ -5,9 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
+
 
 public record PaymentCardResponseDto(
         UUID id,

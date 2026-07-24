@@ -6,10 +6,6 @@ import com.innowise.userservice.dto.paymentcard.PaymentCardUpdateDto;
 
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
-
 public interface PaymentCardCommandService {
 
     PaymentCardResponseDto create(PaymentCardCreateDto dto);

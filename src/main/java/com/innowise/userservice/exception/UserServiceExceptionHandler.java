@@ -7,16 +7,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * @author ma_yak
- */
-
 @RestControllerAdvice
 @Slf4j
 public class UserServiceExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ProblemDetail handleNotFound (ResourceNotFoundException e) {
+        log.warn("Resource not found: {}", e.getMessage());
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
         problem.setProperty("code", "not_found");
         return problem;
@@ -24,6 +21,7 @@ public class UserServiceExceptionHandler {
 
     @ExceptionHandler(CardLimitException.class)
     public ProblemDetail handleCardLimit(CardLimitException e) {
+        log.warn("Card limit exceeded: {}", e.getMessage());
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
         problem.setProperty("code", "card_limit_exceeded");
         return problem;
@@ -35,6 +33,7 @@ public class UserServiceExceptionHandler {
                 .findFirst()
                 .map(f -> f.getField() + ":" + f.getDefaultMessage())
                 .orElse("Validation failed");
+        log.warn("Validation failed: {}", e.getMessage());
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
         problem.setProperty("code", "validation_failed");
         return problem;

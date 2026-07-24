@@ -8,9 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
+
 
 @Getter
 @Setter

@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author ma_yak
- */
+
 
 @RestController
 @RequestMapping("/api/payment-cards")
