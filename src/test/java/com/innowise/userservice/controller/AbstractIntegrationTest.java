@@ -16,11 +16,11 @@ import tools.jackson.databind.ObjectMapper;
 public class AbstractIntegrationTest {
 
     @ServiceConnection
-    static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:latest");
+    static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16");
 
     @SuppressWarnings("resource")
     @ServiceConnection(name = "redis")
-    static GenericContainer<?> redis = new GenericContainer<>("redis:latest")
+    static GenericContainer<?> redis = new GenericContainer<>("redis:7")
             .withExposedPorts(6379);
 
     static {

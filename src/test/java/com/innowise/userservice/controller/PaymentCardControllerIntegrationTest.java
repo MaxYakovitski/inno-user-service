@@ -1,6 +1,7 @@
 package com.innowise.userservice.controller;
 
 import com.innowise.userservice.dto.paymentcard.PaymentCardCreateDto;
+import com.innowise.userservice.dto.paymentcard.PaymentCardResponseDto;
 import com.innowise.userservice.entity.PaymentCard;
 import com.innowise.userservice.entity.User;
 import com.innowise.userservice.repository.PaymentCardRepository;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,14 +52,32 @@ class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void create_should_persist_payment_card_and_return_201() throws Exception {
-        mockMvc.perform(post(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
+        String response = mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.active").value(true));
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        assertThat(paymentCardRepository.findAll()).hasSize(1);
+        List<PaymentCard> cards = paymentCardRepository.findAll();
+        assertThat(cards).hasSize(1);
+        PaymentCard savedCard = cards.getFirst();
+
+        PaymentCardResponseDto actual = objectMapper.readValue(response, PaymentCardResponseDto.class);
+
+        PaymentCardResponseDto expected = new PaymentCardResponseDto(
+                savedCard.getId(),
+                savedCard.getUser().getId(),
+                savedCard.getNumber(),
+                savedCard.getHolder(),
+                savedCard.getExpirationDate(),
+                savedCard.getActive(),
+                savedCard.getCreatedAt(),
+                savedCard.getUpdatedAt()
+        );
+        assertThat(actual).isEqualTo(expected);
+
     }
 
     @Test

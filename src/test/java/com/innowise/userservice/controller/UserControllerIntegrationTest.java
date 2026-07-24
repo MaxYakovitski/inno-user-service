@@ -1,6 +1,7 @@
 package com.innowise.userservice.controller;
 
 import com.innowise.userservice.dto.user.UserCreateDto;
+import com.innowise.userservice.dto.user.UserResponseDto;
 import com.innowise.userservice.dto.user.UserUpdateDto;
 import com.innowise.userservice.entity.User;
 import com.innowise.userservice.repository.UserRepository;
@@ -11,8 +12,10 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,6 +35,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
     private CacheManager cacheManager;
 
     private User user;
+    private final Instant now = Instant.now();
 
     @BeforeEach
     void setUp() {
@@ -41,6 +45,9 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .birthDate(LocalDate.of(1995, Month.JANUARY, 1))
                 .email("m@test.com")
                 .active(true)
+                .cards(List.of())
+                .createdAt(now)
+                .updatedAt(now)
                 .build();
     }
 
@@ -48,16 +55,33 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
     void create_should_persist_user_and_return_201() throws Exception {
         UserCreateDto dto = new UserCreateDto("Maxim", "M", LocalDate.of(1995, Month.JANUARY, 1), "m@test.com");
 
-        mockMvc.perform(post(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
+        String response = mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("Maxim"))
-                .andExpect(jsonPath("$.surname").value("M"))
-                .andExpect(jsonPath("$.email").value("m@test.com"));
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        assertThat(userRepository.findAll()).hasSize(1);
+        List<User> users = userRepository.findAll();
+        assertThat(users).hasSize(1);
+        User savedUser = users.getFirst();
+
+        UserResponseDto actual = objectMapper.readValue(response, UserResponseDto.class);
+
+        UserResponseDto expected = new UserResponseDto(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getSurname(),
+                savedUser.getBirthDate(),
+                savedUser.getEmail(),
+                savedUser.getActive(),
+                List.of(),
+                savedUser.getCreatedAt(),
+                savedUser.getUpdatedAt()
+        );
+
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -92,7 +116,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void update_should_evict_cache() throws Exception {
         User saved = userRepository.save(user);
-        mockMvc.perform(get(BASE_URL+ "/" + saved.getId()))
+        mockMvc.perform(get(BASE_URL + "/" + saved.getId()))
                 .andExpect(status().isOk());
 
         Cache cache = Objects.requireNonNull(cacheManager.getCache("users"), "cache 'users' not initialized");
