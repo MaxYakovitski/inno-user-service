@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -47,6 +48,8 @@ class PaymentCardCommandServiceImplTest {
 
     @InjectMocks
     private PaymentCardCommandServiceImpl paymentCardCommandService;
+
+    private static final int MAX_CARDS_PER_USER = 5;
 
     UUID id = UUID.randomUUID();
     UUID userId = UUID.randomUUID();
@@ -91,8 +94,7 @@ class PaymentCardCommandServiceImplTest {
                 .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
                 .build();
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(savedUser));
-        when(paymentCardRepository.countByUserId(userId)).thenReturn(0L);
+        when(userRepository.findByIdWithPaymentCards(userId)).thenReturn(Optional.of(savedUser));
         when(paymentCardMapper.toEntity(paymentCardCreateDto)).thenReturn(fromDto);
         when(paymentCardRepository.save(fromDto)).thenReturn(savedCard);
         when(paymentCardMapper.toDto(savedCard)).thenReturn(expected);
@@ -103,7 +105,7 @@ class PaymentCardCommandServiceImplTest {
 
     @Test
     void create_should_throw_resource_not_found_exception_when_user_id_not_found() {
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        when(userRepository.findByIdWithPaymentCards(userId)).thenReturn(Optional.empty());
         verify(paymentCardRepository, never()).save(any());
         assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
                 .isInstanceOf(ResourceNotFoundException.class);
@@ -111,10 +113,14 @@ class PaymentCardCommandServiceImplTest {
 
     @Test
     void create_should_throw_exception_when_card_limit_exceeded() {
-        when(paymentCardRepository.countByUserId(userId)).thenReturn(5L);
-        verify(paymentCardRepository, never()).save(any());
+        User withMaxCards = User.builder()
+                .id(userId)
+                .cards(IntStream.range(0, MAX_CARDS_PER_USER).mapToObj(i -> new PaymentCard()).toList())
+                .build();
+        when(userRepository.findByIdWithPaymentCards(userId)).thenReturn(Optional.of(withMaxCards));
         assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
                 .isInstanceOf(CardLimitException.class);
+        verify(paymentCardRepository, never()).save(any());
     }
 
     @Test

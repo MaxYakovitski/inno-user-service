@@ -36,12 +36,11 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     @Transactional
     @CacheEvict(value = "users", key = "#dto.userId()")
     public PaymentCardResponseDto create(PaymentCardCreateDto dto) {
-        long currentCardsQty = paymentCardRepository.countByUserId(dto.userId());
-        if (currentCardsQty >= MAX_CARDS_PER_USER) {
+        User user = userRepository.findByIdWithPaymentCards(dto.userId())
+                .orElseThrow(() -> ResourceNotFoundException.user(dto.userId()));
+        if (user.getCards().size() >= MAX_CARDS_PER_USER) {
             throw new CardLimitException("User: " + dto.userId() + " already has the maximum of " + MAX_CARDS_PER_USER + " cards");
         }
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> ResourceNotFoundException.user(dto.userId()));
         PaymentCard card = paymentCardMapper.toEntity(dto);
         card.setUser(user);
         card.setActive(true);

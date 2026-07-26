@@ -6,6 +6,7 @@ import com.innowise.userservice.entity.PaymentCard;
 import com.innowise.userservice.entity.User;
 import com.innowise.userservice.repository.PaymentCardRepository;
 import com.innowise.userservice.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String BASE_URL = "/api/payment_cards";
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -91,6 +95,9 @@ class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
                     .active(true)
                     .build());
         }
+
+        entityManager.flush();
+        entityManager.clear();
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
