@@ -41,4 +41,11 @@ public class UserQueryServiceImpl implements UserQueryService {
                 .and(UserSpecification.hasSurname(surname)));
         return userRepository.findAll(specification, pageable).map(userMapper::toDto);
     }
+
+    @Override
+    public User getUserWithCardsForUpdate(UUID id) {
+        return userRepository.findByIdWithPaymentCards(id)
+                .orElseThrow(() -> ResourceNotFoundException.user(id));
+    }
+
 }

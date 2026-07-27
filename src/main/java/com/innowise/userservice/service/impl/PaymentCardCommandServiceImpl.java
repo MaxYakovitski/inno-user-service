@@ -9,8 +9,8 @@ import com.innowise.userservice.exception.CardLimitException;
 import com.innowise.userservice.exception.ResourceNotFoundException;
 import com.innowise.userservice.mapper.PaymentCardMapper;
 import com.innowise.userservice.repository.PaymentCardRepository;
-import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.service.PaymentCardCommandService;
+import com.innowise.userservice.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,7 +27,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     private final PaymentCardRepository paymentCardRepository;
     private final PaymentCardMapper paymentCardMapper;
 
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
     private final RedisCacheManager cacheManager;
 
     private static final int MAX_CARDS_PER_USER = 5;
@@ -36,8 +36,7 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
     @Transactional
     @CacheEvict(value = "users", key = "#dto.userId()")
     public PaymentCardResponseDto create(PaymentCardCreateDto dto) {
-        User user = userRepository.findByIdWithPaymentCards(dto.userId())
-                .orElseThrow(() -> ResourceNotFoundException.user(dto.userId()));
+        User user = userQueryService.getUserWithCardsForUpdate(dto.userId());
         if (user.getCards().size() >= MAX_CARDS_PER_USER) {
             throw new CardLimitException("User: " + dto.userId() + " already has the maximum of " + MAX_CARDS_PER_USER + " cards");
         }

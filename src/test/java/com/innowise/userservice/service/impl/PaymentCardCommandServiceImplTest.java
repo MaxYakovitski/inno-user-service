@@ -9,7 +9,7 @@ import com.innowise.userservice.exception.CardLimitException;
 import com.innowise.userservice.exception.ResourceNotFoundException;
 import com.innowise.userservice.mapper.PaymentCardMapper;
 import com.innowise.userservice.repository.PaymentCardRepository;
-import com.innowise.userservice.repository.UserRepository;
+import com.innowise.userservice.service.UserQueryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ class PaymentCardCommandServiceImplTest {
     private PaymentCardMapper paymentCardMapper;
 
     @Mock
-    private UserRepository userRepository;
+    private UserQueryService userQueryService;
 
     @Mock
     private RedisCacheManager cacheManager;
@@ -94,7 +94,7 @@ class PaymentCardCommandServiceImplTest {
                 .expirationDate(LocalDate.of(2030, Month.JANUARY, 1))
                 .build();
 
-        when(userRepository.findByIdWithPaymentCards(userId)).thenReturn(Optional.of(savedUser));
+        when(userQueryService.getUserWithCardsForUpdate(userId)).thenReturn(savedUser);
         when(paymentCardMapper.toEntity(paymentCardCreateDto)).thenReturn(fromDto);
         when(paymentCardRepository.save(fromDto)).thenReturn(savedCard);
         when(paymentCardMapper.toDto(savedCard)).thenReturn(expected);
@@ -105,7 +105,7 @@ class PaymentCardCommandServiceImplTest {
 
     @Test
     void create_should_throw_resource_not_found_exception_when_user_id_not_found() {
-        when(userRepository.findByIdWithPaymentCards(userId)).thenReturn(Optional.empty());
+        when(userQueryService.getUserWithCardsForUpdate(userId)).thenThrow(ResourceNotFoundException.user(userId));
         verify(paymentCardRepository, never()).save(any());
         assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
                 .isInstanceOf(ResourceNotFoundException.class);
@@ -115,9 +115,9 @@ class PaymentCardCommandServiceImplTest {
     void create_should_throw_exception_when_card_limit_exceeded() {
         User withMaxCards = User.builder()
                 .id(userId)
-                .cards(IntStream.range(0, MAX_CARDS_PER_USER).mapToObj(i -> new PaymentCard()).toList())
+                .cards(IntStream.range(0, MAX_CARDS_PER_USER).mapToObj(_ -> new PaymentCard()).toList())
                 .build();
-        when(userRepository.findByIdWithPaymentCards(userId)).thenReturn(Optional.of(withMaxCards));
+        when(userQueryService.getUserWithCardsForUpdate(userId)).thenReturn(withMaxCards);
         assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
                 .isInstanceOf(CardLimitException.class);
         verify(paymentCardRepository, never()).save(any());
