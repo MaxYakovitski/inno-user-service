@@ -3,6 +3,15 @@ spring:
   application:
     name: user-service
 
+  config:
+    import: optional:file:.env[.properties]
+
   jpa:
     hibernate:
       ddl-auto: validate
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTH_JWKS_URI}

@@ -34,11 +34,11 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
 
     @Override
     @Transactional
-    @CacheEvict(value = "users", key = "#dto.userId()")
-    public PaymentCardResponseDto create(PaymentCardCreateDto dto) {
-        User user = userQueryService.getUserWithCardsForUpdate(dto.userId());
+    @CacheEvict(value = "users", key = "#userId")
+    public PaymentCardResponseDto create(UUID userId, PaymentCardCreateDto dto) {
+        User user = userQueryService.getUserWithCardsForUpdate(userId);
         if (user.getCards().size() >= MAX_CARDS_PER_USER) {
-            throw new CardLimitException("User: " + dto.userId() + " already has the maximum of " + MAX_CARDS_PER_USER + " cards");
+            throw new CardLimitException("User: " + userId + " already has the maximum of " + MAX_CARDS_PER_USER + " cards");
         }
         PaymentCard card = paymentCardMapper.toEntity(dto);
         card.setUser(user);

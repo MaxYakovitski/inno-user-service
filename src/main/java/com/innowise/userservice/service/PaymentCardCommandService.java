@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface PaymentCardCommandService {
 
-    PaymentCardResponseDto create(PaymentCardCreateDto dto);
+    PaymentCardResponseDto create(UUID userId, PaymentCardCreateDto dto);
     PaymentCardResponseDto update(UUID id, PaymentCardUpdateDto dto);
 
     void activate(UUID id);
