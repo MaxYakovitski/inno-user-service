@@ -17,6 +17,7 @@ services:
         condition: service_healthy
     networks:
       - inno-net
+      - user-internal
 
   user-postgres:
     image: postgres:16
@@ -35,7 +36,7 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      - inno-net
+      - user-internal
 
   redis:
     image: redis:7
@@ -50,7 +51,7 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      - inno-net
+      - user-internal
 
 volumes:
   postgres_data:
@@ -59,3 +60,5 @@ volumes:
 networks:
   inno-net:
     external: true
+  user-internal:
+    driver: bridge
