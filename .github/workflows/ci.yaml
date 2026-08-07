@@ -50,7 +50,7 @@ jobs:
           restore-keys: ${{runner.os}}-m2
 
       - name: Run tests
-        run: mvn -B test -X
+        run: mvn -B test
 
   #3 code analysis by SonarCloud
   sonar-analysis:
