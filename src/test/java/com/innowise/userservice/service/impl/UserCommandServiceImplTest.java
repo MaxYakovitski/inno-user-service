@@ -167,4 +167,20 @@ class UserCommandServiceImplTest {
         assertThatThrownBy(() -> userCommandService.deactivate(id))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
+
+    @Test
+    void delete_existingUser_removesUser() {
+        User user = User.builder().id(id).build();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        userCommandService.delete(id);
+        verify(userRepository).delete(user);
+    }
+
+    @Test
+    void delete_unknownUser_throws_resource_not_found() {
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> userCommandService.delete(id))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(userRepository, never()).delete(any(User.class));
+    }
 }

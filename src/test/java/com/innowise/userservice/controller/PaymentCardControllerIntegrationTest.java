@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
 
-    private static final String BASE_URL = "/api/payment_cards";
+    private static final String BASE_URL = "/api/payment-cards";
 
     @Autowired
     private EntityManager entityManager;
@@ -48,7 +48,6 @@ class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
                 .build());
 
         dto = new PaymentCardCreateDto(
-                user.getId(),
                 "1234123412349999",
                 "Maxim Maximov",
                 LocalDate.of(2030, Month.JANUARY, 1));
@@ -57,6 +56,7 @@ class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void create_should_persist_payment_card_and_return_201() throws Exception {
         String response = mockMvc.perform(post(BASE_URL)
+                        .with(asUser(user.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -100,6 +100,7 @@ class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
         entityManager.clear();
 
         mockMvc.perform(post(BASE_URL)
+                        .with(asUser(user.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isConflict())

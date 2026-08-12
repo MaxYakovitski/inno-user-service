@@ -44,7 +44,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     public User getUserWithCardsForUpdate(UUID id) {
-        return userRepository.findByIdWithPaymentCards(id)
+        return userRepository.findByIdWithPaymentCardsForUpdate(id)
                 .orElseThrow(() -> ResourceNotFoundException.user(id));
     }
 

@@ -58,7 +58,6 @@ class PaymentCardCommandServiceImplTest {
     User savedUser = User.builder().id(userId).build();
 
     PaymentCardCreateDto paymentCardCreateDto = new PaymentCardCreateDto(
-            userId,
             "1234123412341234",
             "Maxim Maximov",
             LocalDate.of(2030, Month.JANUARY,1)
@@ -99,7 +98,7 @@ class PaymentCardCommandServiceImplTest {
         when(paymentCardRepository.save(fromDto)).thenReturn(savedCard);
         when(paymentCardMapper.toDto(savedCard)).thenReturn(expected);
 
-        PaymentCardResponseDto actualDto = paymentCardCommandService.create(paymentCardCreateDto);
+        PaymentCardResponseDto actualDto = paymentCardCommandService.create(userId, paymentCardCreateDto);
         assertThat(actualDto).isEqualTo(expected);
     }
 
@@ -107,7 +106,7 @@ class PaymentCardCommandServiceImplTest {
     void create_should_throw_resource_not_found_exception_when_user_id_not_found() {
         when(userQueryService.getUserWithCardsForUpdate(userId)).thenThrow(ResourceNotFoundException.user(userId));
         verify(paymentCardRepository, never()).save(any());
-        assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
+        assertThatThrownBy(() -> paymentCardCommandService.create(userId, paymentCardCreateDto))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -118,7 +117,7 @@ class PaymentCardCommandServiceImplTest {
                 .cards(IntStream.range(0, MAX_CARDS_PER_USER).mapToObj(_ -> new PaymentCard()).toList())
                 .build();
         when(userQueryService.getUserWithCardsForUpdate(userId)).thenReturn(withMaxCards);
-        assertThatThrownBy(() -> paymentCardCommandService.create(paymentCardCreateDto))
+        assertThatThrownBy(() -> paymentCardCommandService.create(userId, paymentCardCreateDto))
                 .isInstanceOf(CardLimitException.class);
         verify(paymentCardRepository, never()).save(any());
     }

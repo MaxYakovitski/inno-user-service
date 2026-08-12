@@ -24,6 +24,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public UserResponseDto create(UserCreateDto dto) {
         boolean emailAlreadyExist = userRepository.existsByEmail(dto.email());
         if (emailAlreadyExist) {
@@ -68,5 +69,14 @@ public class UserCommandServiceImpl implements UserCommandService {
         if (updated == 0) {
             throw  ResourceNotFoundException.user(id);
         }
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "users", key = "#id")
+    public void delete(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.user(id));
+        userRepository.delete(user);
     }
 }
