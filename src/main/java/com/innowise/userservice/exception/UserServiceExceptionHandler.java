@@ -29,6 +29,14 @@ public class UserServiceExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ProblemDetail handleEmailExists(EmailAlreadyExistsException e) {
+        log.warn("Email already exists: {}", e.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problem.setProperty("code", "email_already_exists");
+        return problem;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidation(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()

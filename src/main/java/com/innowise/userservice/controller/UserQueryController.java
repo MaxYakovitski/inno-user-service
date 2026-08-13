@@ -29,7 +29,7 @@ public class UserQueryController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.name")
     public ResponseEntity<UserResponseDto> getById(@PathVariable UUID id) {
        return ResponseEntity.ok(userQueryService.getById(id));
     }

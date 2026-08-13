@@ -1,9 +1,5 @@
 package com.innowise.userservice.controller;
 
-import com.innowise.userservice.repository.PaymentCardRepository;
-import com.innowise.userservice.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
