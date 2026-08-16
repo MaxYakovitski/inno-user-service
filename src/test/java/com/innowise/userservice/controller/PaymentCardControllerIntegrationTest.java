@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class PaymentCardControllerIntegrationTest extends AbstractIntegrationTest {
 
-    private static final String BASE_URL = "/api/payment-cards";
+    private static final String BASE_URL = "/api/v1/payment-cards";
 
     @Autowired
     private EntityManager entityManager;

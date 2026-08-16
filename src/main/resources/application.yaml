@@ -1,17 +1,30 @@
 spring:
 
   application:
-    name: user-service
+    name: inno-user-service
 
   config:
     import: optional:file:.env[.properties]
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: validate
 
+  data:
+    redis:
+      host: localhost
+      port: 6380
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${AUTH_JWKS_URI:http://localhost:9000/.well-known/jwks.json}
+          jwk-set-uri: ${AUTH_JWKS_URI:http://localhost:8082/.well-known/jwks.json}
+
+server:
+  port: ${SERVER_PORT:8081}

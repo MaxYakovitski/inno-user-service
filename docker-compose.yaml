@@ -1,19 +1,23 @@
 services:
   user-service:
     build: .
+    image: inno-user-service
     container_name: user-service-app
     ports:
-      - "8080:8080"
+      - "${APP_PORT}:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      AUTH_JWKS_URI: ${AUTH_JWKS_URI}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-postgres:5432/${POSTGRES_DB}
+      SPRING_DATA_REDIS_HOST: user-redis
+      SPRING_DATA_REDIS_PORT: 6379
+      AUTH_JWKS_URI: http://auth-service:8080/.well-known/jwks.json
     depends_on:
       user-postgres:
         condition: service_healthy
-      redis:
+      user-redis:
         condition: service_healthy
     networks:
       - inno-net
@@ -27,7 +31,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -38,11 +42,11 @@ services:
     networks:
       - user-internal
 
-  redis:
+  user-redis:
     image: redis:7
     container_name: user-service-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_HOST_PORT}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
