@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/payment-cards")
+@RequestMapping("/api/v1/payment-cards")
 @RequiredArgsConstructor
 public class PaymentCardQueryController {
 

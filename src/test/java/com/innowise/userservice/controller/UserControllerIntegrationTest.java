@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
-    private static final String BASE_URL = "/api/users";
+    private static final String BASE_URL = "/api/v1/users";
 
     @Autowired
     private UserRepository userRepository;
